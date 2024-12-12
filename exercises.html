@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercises - FitTrack Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>FitTrack Pro</h1>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="exercises.html" class="active">Exercises</a></li>
+                <li><a href="workouts.html">Workouts</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="history.html">History</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Exercises</h2>
+            <button id="addExerciseBtn" class="add-button">+ Add Exercise</button>
+            <div id="exerciseForm" class="hidden">
+                <form id="addExerciseForm">
+                    <label for="exerciseName">Exercise Name</label>
+                    <input type="text" id="exerciseName" placeholder="Exercise Name" required>
+
+                    <label for="muscleGroup">Muscle Group</label>
+                    <select id="muscleGroup" required>
+                        <option value="Chest">Chest</option>
+                        <option value="Back">Back</option>
+                        <option value="Shoulders">Shoulders</option>
+                        <option value="Biceps">Biceps</option>
+                        <option value="Triceps">Triceps</option>
+                        <option value="Legs">Legs</option>
+                        <option value="Core">Core</option>
+                        <option value="Full Body">Full Body</option>
+                    </select>
+
+                    <label for="exerciseNotes">Notes</label>
+                    <textarea id="exerciseNotes" placeholder="Form tips, variations, etc."></textarea>
+
+                    <div class="button-group">
+                        <button type="button" id="cancelBtn" class="cancel-button">Cancel</button>
+                        <button type="submit" class="add-button">Add Exercise</button>
+                    </div>
+                </form>
+            </div>
+            <ul id="exerciseList">
+                <p>No exercises added yet. Click the "Add Exercise" button to get started.</p>
+            </ul>
+        </section>
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>

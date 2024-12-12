@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymTracker Dashboard</title>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Manifest für die PWA -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Theme-Farbe für PWA -->
+    <meta name="theme-color" content="#6c63ff">
+
+    <!-- Service Worker Registrierung -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("./service-worker.js")
+                .then(() => console.log("Service Worker erfolgreich registriert."))
+                .catch((error) => console.log("Service Worker-Registrierung fehlgeschlagen:", error));
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>FitTrack Pro</h1>
+            <ul>
+                <li><a href="index.html" class="active">Dashboard</a></li>
+                <li><a href="exercises.html">Exercises</a></li>
+                <li><a href="workouts.html">Workouts</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="history.html">History</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="dashboard">
+            <div class="card">
+                <h2>Start Workout</h2>
+                <p>Begin a new training session</p>
+            </div>
+            <div class="card">
+                <h2>Exercises</h2>
+                <p>Manage your exercise library</p>
+            </div>
+            <div class="card">
+                <h2>Progress</h2>
+                <p>Track your improvements</p>
+            </div>
+            <div class="card">
+                <h2>History</h2>
+                <p>View past workouts</p>
+            </div>
+        </section>
+
+        <section class="recent-workouts">
+            <h2>Recent Workouts</h2>
+            <p>No workouts recorded yet. Start your first workout!</p>
+        </section>
+    </main>
+
+    <!-- Haupt-JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>

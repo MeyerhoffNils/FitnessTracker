@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workouts - FitTrack Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>FitTrack Pro</h1>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="exercises.html">Exercises</a></li>
+                <li><a href="workouts.html" class="active">Workouts</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="history.html">History</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Start a Workout</h2>
+            <button id="startWorkoutBtn" class="add-button">Start New Workout</button>
+            <div id="workoutForm" class="hidden">
+                <h3>Current Workout</h3>
+                <p id="workoutDate"></p>
+                <div>
+                    <label for="exerciseSelect">Add exercise to workout</label>
+                    <select id="exerciseSelect">
+                        <option value="">Select an exercise</option>
+                    </select>
+                    <button id="addExerciseBtn" class="add-button">+ Add</button>
+                </div>
+                <div id="workoutExercises"></div>
+                <textarea id="workoutNotes" placeholder="How was your workout? Any achievements or challenges?"></textarea>
+                <button id="saveWorkoutBtn" class="add-button">Save Workout</button>
+            </div>
+        </section>
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>
