@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Progress - FitTrack Pro</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
@@ -19,13 +20,35 @@
             </ul>
         </nav>
     </header>
+
     <main>
-        <h2>Progress</h2>
-        <p>Track your improvements over time.</p>
-        <!-- Inhalt der Seite -->
-        <div id="progressContainer">
-            <p>No progress data yet.</p>
-        </div>
+        <section class="progress">
+            <h2>Progress</h2>
+            
+            <!-- Dropdowns -->
+            <div class="filters">
+                <label for="exerciseSelect">Choose Exercise:</label>
+                <select id="exerciseSelect">
+                    <option value="">Select an exercise</option>
+                </select>
+
+                <label for="timeRange">Time Range:</label>
+                <select id="timeRange">
+                    <option value="7">Last 7 Days</option>
+                    <option value="30">Last 30 Days</option>
+                    <option value="90">Last 3 Months</option>
+                    <option value="all">All Time</option>
+                </select>
+            </div>
+
+            <!-- Graphen -->
+            <div class="charts">
+                <canvas id="volumeChart"></canvas>
+                <canvas id="maxWeightChart"></canvas>
+            </div>
+        </section>
     </main>
+
+    <script src="app.js"></script>
 </body>
 </html>
