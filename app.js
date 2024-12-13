@@ -259,18 +259,23 @@ if (document.body.querySelector("main.progress")) {
     const volumeChartCanvas = document.getElementById("volumeChart");
     const maxWeightChartCanvas = document.getElementById("maxWeightChart");
 
-    let workouts = loadWorkoutsFromLocalStorage();
-    let exercises = loadExercisesFromLocalStorage();
+    // Workouts und Übungen aus localStorage laden
+    const workouts = loadWorkoutsFromLocalStorage();
+    const exercises = loadExercisesFromLocalStorage();
 
     // Dropdown für Übungen befüllen
     function populateExerciseDropdown() {
         exerciseSelect.innerHTML = "<option value=''>Select an exercise</option>";
-        exercises.forEach((exercise, index) => {
-            const option = document.createElement("option");
-            option.value = exercise.name;
-            option.textContent = `${exercise.name} (${exercise.muscleGroup})`;
-            exerciseSelect.appendChild(option);
-        });
+        if (exercises && exercises.length > 0) {
+            exercises.forEach(exercise => {
+                const option = document.createElement("option");
+                option.value = exercise.name;
+                option.textContent = `${exercise.name} (${exercise.muscleGroup})`;
+                exerciseSelect.appendChild(option);
+            });
+        } else {
+            console.error("No exercises found in localStorage.");
+        }
     }
 
     populateExerciseDropdown();
@@ -283,6 +288,11 @@ if (document.body.querySelector("main.progress")) {
         if (!selectedExercise) return;
 
         const filteredWorkouts = filterWorkouts(selectedExercise, selectedTimeRange);
+        if (filteredWorkouts.length === 0) {
+            console.log("No workouts found for the selected exercise and time range.");
+            return;
+        }
+
         const chartData = prepareChartData(filteredWorkouts);
 
         renderVolumeChart(chartData.dates, chartData.volumes);
