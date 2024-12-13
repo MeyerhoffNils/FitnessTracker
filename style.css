@@ -262,3 +262,42 @@ ul li {
     color: #5548c8;
 }
 
+/* Responsive Anpassungen für kleinere Bildschirme */
+@media (max-width: 768px) {
+    /* Navigation */
+    header nav ul {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    header nav ul li a {
+        padding: 8px 15px;
+        font-size: 0.9rem; /* Textgröße etwas kleiner */
+    }
+
+    /* Dashboard Cards */
+    .dashboard {
+        grid-template-columns: 1fr; /* Eine Spalte für kleinere Bildschirme */
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .card {
+        padding: 12px;
+        font-size: 1rem; /* Kleinere Schriftgröße */
+    }
+
+    /* Recent Workouts */
+    .recent-workouts {
+        padding: 10px;
+    }
+
+    .recent-workouts h2 {
+        font-size: 1.2rem;
+    }
+
+    .recent-workouts p {
+        font-size: 0.9rem;
+    }
+}
