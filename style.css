@@ -30,10 +30,6 @@ header nav ul {
     gap: 20px;
 }
 
-header nav ul li {
-    display: inline;
-}
-
 header nav ul li a {
     color: white;
     text-decoration: none;
@@ -94,13 +90,18 @@ header nav ul li a:hover {
 }
 
 /* Buttons */
-.add-button {
-    background-color: #6c63ff;
+.add-button,
+.cancel-button {
     color: white;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-button {
+    background-color: #6c63ff;
 }
 
 .add-button:hover {
@@ -109,22 +110,13 @@ header nav ul li a:hover {
 
 .cancel-button {
     background-color: #f44336;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
 .cancel-button:hover {
     background-color: #c73528;
 }
 
-/* Hidden Form */
-.hidden {
-    display: none;
-}
-
+/* Formulare */
 form {
     display: flex;
     flex-direction: column;
@@ -139,13 +131,16 @@ form label {
     font-weight: bold;
 }
 
-form input, form select, form textarea {
+form input,
+form select,
+form textarea {
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
+/* Exercise List */
 ul {
     list-style: none;
     padding: 0;
@@ -157,42 +152,6 @@ ul li {
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-/* Verstecktes Formular */
-.hidden {
-    display: none;
-}
-
-/* Formular Buttons */
-.button-group {
-    display: flex;
-    justify-content: space-between;
-}
-
-.add-button {
-    background-color: #6c63ff;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.add-button:hover {
-    background-color: #5548c8;
-}
-
-.cancel-button {
-    background-color: #f44336;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.cancel-button:hover {
-    background-color: #c73528;
 }
 
 #workoutForm {
@@ -225,6 +184,7 @@ ul li {
     border-radius: 5px;
 }
 
+/* Workout History */
 .workout-item {
     display: flex;
     justify-content: space-between;
@@ -234,10 +194,6 @@ ul li {
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     margin-bottom: 10px;
-}
-
-.workout-item div {
-    flex: 1;
 }
 
 .workout-item p {
@@ -262,7 +218,7 @@ ul li {
     color: #5548c8;
 }
 
-/* Responsive Anpassungen für kleinere Bildschirme */
+/* Responsive Anpassungen */
 @media (max-width: 768px) {
     /* Navigation */
     header nav ul {
@@ -272,20 +228,20 @@ ul li {
     }
 
     header nav ul li a {
-        padding: 8px 15px;
-        font-size: 0.9rem; /* Textgröße etwas kleiner */
+        padding: 8px 12px;
+        font-size: 0.9rem;
     }
 
     /* Dashboard Cards */
     .dashboard {
-        grid-template-columns: 1fr; /* Eine Spalte für kleinere Bildschirme */
+        grid-template-columns: 1fr; /* Eine Spalte */
         gap: 10px;
         padding: 10px;
     }
 
     .card {
+        font-size: 1rem;
         padding: 12px;
-        font-size: 1rem; /* Kleinere Schriftgröße */
     }
 
     /* Recent Workouts */
