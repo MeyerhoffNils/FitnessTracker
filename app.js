@@ -1,4 +1,5 @@
-// Lokale Speicherung - Funktionen
+// === Lokale Speicherung ===
+// Funktionen zum Speichern und Laden von Übungen und Workouts
 function saveExercisesToLocalStorage(exercises) {
     localStorage.setItem("exercises", JSON.stringify(exercises));
 }
@@ -17,15 +18,13 @@ function loadWorkoutsFromLocalStorage() {
     return savedWorkouts ? JSON.parse(savedWorkouts) : [];
 }
 
-// Aktuelle Seite erkennen
+// === Globale Variablen ===
 const currentPage = document.body.querySelector("header nav a.active").textContent;
-
-// Globale Variablen
 let exercises = loadExercisesFromLocalStorage();
 let workouts = loadWorkoutsFromLocalStorage();
 let currentWorkout = null;
 
-// --- Exercises-Seite ---
+// === Exercises-Seite ===
 if (currentPage === "Exercises") {
     const addExerciseBtn = document.getElementById("addExerciseBtn");
     const exerciseForm = document.getElementById("exerciseForm");
@@ -51,40 +50,28 @@ if (currentPage === "Exercises") {
         }
     }
 
-    // Event: Übung hinzufügen
+    // Event Listener: Übung hinzufügen
     addExerciseForm.addEventListener("submit", (event) => {
         event.preventDefault();
-
-        // Werte aus dem Formular holen
         const name = document.getElementById("exerciseName").value;
         const muscleGroup = document.getElementById("muscleGroup").value;
         const notes = document.getElementById("exerciseNotes").value;
 
-        // Neue Übung hinzufügen
-        const newExercise = { name, muscleGroup, notes };
-        exercises.push(newExercise);
-
-        // Übungen speichern und anzeigen
+        exercises.push({ name, muscleGroup, notes });
         saveExercisesToLocalStorage(exercises);
         displayExercises();
-
-        // Formular zurücksetzen und ausblenden
         addExerciseForm.reset();
         exerciseForm.classList.add("hidden");
     });
 
-    // Event: Formular anzeigen
-    addExerciseBtn.addEventListener("click", () => {
-        exerciseForm.classList.remove("hidden");
-    });
-
-    // Event: Formular ausblenden
+    // Event Listener: Formular anzeigen/ausblenden
+    addExerciseBtn.addEventListener("click", () => exerciseForm.classList.remove("hidden"));
     cancelBtn.addEventListener("click", () => {
         exerciseForm.classList.add("hidden");
         addExerciseForm.reset();
     });
 
-    // Event: Übung löschen
+    // Event Listener: Übung löschen
     exerciseList.addEventListener("click", (event) => {
         if (event.target.classList.contains("delete-button")) {
             const index = event.target.getAttribute("data-index");
@@ -98,7 +85,7 @@ if (currentPage === "Exercises") {
     displayExercises();
 }
 
-// --- Workouts-Seite ---
+// === Workouts-Seite ===
 if (currentPage === "Workouts") {
     const startWorkoutBtn = document.getElementById("startWorkoutBtn");
     const workoutForm = document.getElementById("workoutForm");
@@ -108,8 +95,8 @@ if (currentPage === "Workouts") {
     const workoutExercises = document.getElementById("workoutExercises");
     const saveWorkoutBtn = document.getElementById("saveWorkoutBtn");
 
-    // Funktion: Gespeicherte Übungen in Dropdown laden
-    function loadExercisesIntoDropdown() {
+    // Funktion: Dropdown für Übungen befüllen
+    function populateExerciseDropdown() {
         exerciseSelect.innerHTML = "<option value=''>Select an exercise</option>";
         exercises.forEach((exercise, index) => {
             const option = document.createElement("option");
@@ -119,24 +106,20 @@ if (currentPage === "Workouts") {
         });
     }
 
-    // Event: Workout starten
+    // Event Listener: Workout starten
     startWorkoutBtn.addEventListener("click", () => {
-        currentWorkout = {
-            date: new Date().toLocaleDateString(),
-            exercises: [],
-            notes: ""
-        };
+        currentWorkout = { date: new Date().toLocaleDateString(), exercises: [], notes: "" };
         workoutForm.classList.remove("hidden");
         workoutDate.textContent = currentWorkout.date;
-        loadExercisesIntoDropdown();
+        populateExerciseDropdown();
     });
 
-    // Event: Übung zum Workout hinzufügen
+    // Event Listener: Übung hinzufügen
     addExerciseBtn.addEventListener("click", () => {
-        const selectedExerciseIndex = exerciseSelect.value;
-        if (selectedExerciseIndex === "") return;
+        const selectedIndex = exerciseSelect.value;
+        if (selectedIndex === "") return;
 
-        const selectedExercise = exercises[selectedExerciseIndex];
+        const selectedExercise = exercises[selectedIndex];
         const exerciseDiv = document.createElement("div");
         exerciseDiv.classList.add("exercise-entry");
         exerciseDiv.innerHTML = `
@@ -149,8 +132,6 @@ if (currentPage === "Workouts") {
 
         const setsDiv = exerciseDiv.querySelector(".sets");
         const addSetBtn = exerciseDiv.querySelector(".add-set-btn");
-
-        // Event: Set hinzufügen
         addSetBtn.addEventListener("click", () => {
             const setDiv = document.createElement("div");
             setDiv.innerHTML = `
@@ -160,20 +141,14 @@ if (currentPage === "Workouts") {
             setsDiv.appendChild(setDiv);
         });
 
-        // Speichere die Übung im aktuellen Workout
-        currentWorkout.exercises.push({
-            name: selectedExercise.name,
-            muscleGroup: selectedExercise.muscleGroup,
-            sets: []
-        });
+        currentWorkout.exercises.push({ name: selectedExercise.name, muscleGroup: selectedExercise.muscleGroup, sets: [] });
     });
 
-    // Event: Workout speichern
+    // Event Listener: Workout speichern
     saveWorkoutBtn.addEventListener("click", () => {
         const notes = document.getElementById("workoutNotes").value;
         currentWorkout.notes = notes;
 
-        // Sets sammeln
         const exerciseDivs = workoutExercises.querySelectorAll(".exercise-entry");
         exerciseDivs.forEach((exerciseDiv, index) => {
             const sets = [];
@@ -181,28 +156,24 @@ if (currentPage === "Workouts") {
             setDivs.forEach((setDiv) => {
                 const weight = setDiv.querySelector(".set-weight").value;
                 const reps = setDiv.querySelector(".set-reps").value;
-                if (weight && reps) {
-                    sets.push({ weight, reps });
-                }
+                if (weight && reps) sets.push({ weight: parseFloat(weight), reps: parseInt(reps) });
             });
             currentWorkout.exercises[index].sets = sets;
         });
 
-        // Workout speichern
         workouts.push(currentWorkout);
         saveWorkoutsToLocalStorage(workouts);
-
-        // Reset
         workoutForm.classList.add("hidden");
         workoutExercises.innerHTML = "";
         document.getElementById("workoutNotes").value = "";
         alert("Workout saved successfully!");
     });
 }
+
+// === History-Seite ===
 if (currentPage === "History") {
     const workoutHistory = document.getElementById("workoutHistory");
 
-    // Funktion: Workouts anzeigen
     function displayWorkoutHistory() {
         workoutHistory.innerHTML = "";
         if (workouts.length === 0) {
@@ -214,174 +185,23 @@ if (currentPage === "History") {
                 workoutItem.innerHTML = `
                     <div>
                         <p><strong>${workout.date}</strong></p>
-                        <p>${workout.exercises.map(ex => ex.name).join(", ")}</p>
-                        <p>${workout.exercises.length} ${workout.exercises.length > 1 ? "exercises" : "exercise"}</p>
+                        <p>${workout.exercises.map(e => e.name).join(", ")}</p>
+                        <p>${workout.exercises.length} exercises</p>
                         <a href="#" class="view-details" data-index="${index}">View Details</a>
                     </div>
-                    <button class="edit-button" data-index="${index}">&#9998;</button>
                 `;
                 workoutHistory.appendChild(workoutItem);
             });
         }
     }
 
-    // Event: Workout-Details anzeigen
     workoutHistory.addEventListener("click", (event) => {
         if (event.target.classList.contains("view-details")) {
             const index = event.target.getAttribute("data-index");
             const workout = workouts[index];
-            alert(`Details for ${workout.date}:\n\n${workout.exercises.map((exercise, i) => {
-                const sets = exercise.sets.map(set => `${set.weight}kg x ${set.reps} reps`).join("\n");
-                return `${i + 1}. ${exercise.name}:\n${sets}`;
-            }).join("\n\n")}\n\nNotes: ${workout.notes}`);
+            alert(`Details for ${workout.date}:\n${workout.exercises.map(e => `${e.name}: ${e.sets.map(s => `${s.weight}kg x ${s.reps} reps`).join(", ")}`).join("\n")}`);
         }
     });
 
-    // Event: Workout bearbeiten
-    workoutHistory.addEventListener("click", (event) => {
-        if (event.target.classList.contains("edit-button")) {
-            const index = event.target.getAttribute("data-index");
-            const workout = workouts[index];
-            // Bearbeitungslogik (du kannst hier eine Funktion aufrufen, um es zu bearbeiten)
-            alert("Edit functionality is under construction!");
-        }
-    });
-
-    // Initial: Workouts anzeigen
     displayWorkoutHistory();
-}
-
-// Prüfen, ob die Progress-Seite geladen ist
-if (document.body.querySelector("main.progress")) {
-    // Elemente abrufen
-    const exerciseSelect = document.getElementById("exerciseSelect");
-    const timeRange = document.getElementById("timeRange");
-    const volumeChartCanvas = document.getElementById("volumeChart");
-    const maxWeightChartCanvas = document.getElementById("maxWeightChart");
-
-    // Workouts und Übungen aus localStorage laden
-    const workouts = loadWorkoutsFromLocalStorage();
-    const exercises = loadExercisesFromLocalStorage();
-
-    // Dropdown für Übungen befüllen
-    function populateExerciseDropdown() {
-        exerciseSelect.innerHTML = "<option value=''>Select an exercise</option>";
-        if (exercises && exercises.length > 0) {
-            exercises.forEach(exercise => {
-                const option = document.createElement("option");
-                option.value = exercise.name;
-                option.textContent = `${exercise.name} (${exercise.muscleGroup})`;
-                exerciseSelect.appendChild(option);
-            });
-        } else {
-            console.error("No exercises found in localStorage.");
-        }
-    }
-
-    populateExerciseDropdown();
-
-    // Daten filtern und Diagramme aktualisieren
-    function updateCharts() {
-        const selectedExercise = exerciseSelect.value;
-        const selectedTimeRange = timeRange.value;
-
-        if (!selectedExercise) return;
-
-        const filteredWorkouts = filterWorkouts(selectedExercise, selectedTimeRange);
-        if (filteredWorkouts.length === 0) {
-            console.log("No workouts found for the selected exercise and time range.");
-            return;
-        }
-
-        const chartData = prepareChartData(filteredWorkouts);
-
-        renderVolumeChart(chartData.dates, chartData.volumes);
-        renderMaxWeightChart(chartData.dates, chartData.maxWeights);
-    }
-
-    // Workouts filtern
-    function filterWorkouts(exerciseName, timeRange) {
-        const now = new Date();
-        return workouts
-            .filter(workout =>
-                workout.exercises.some(e => e.name === exerciseName) &&
-                (timeRange === "all" || (now - new Date(workout.date)) / (1000 * 60 * 60 * 24) <= timeRange)
-            );
-    }
-
-    // Daten für Diagramme vorbereiten
-    function prepareChartData(filteredWorkouts) {
-        const dates = [];
-        const volumes = [];
-        const maxWeights = [];
-
-        filteredWorkouts.forEach(workout => {
-            const workoutDate = new Date(workout.date).toLocaleDateString();
-            const exercise = workout.exercises.find(e => e.name === exerciseSelect.value);
-
-            dates.push(workoutDate);
-            volumes.push(exercise.sets.reduce((sum, set) => sum + (set.weight * set.reps), 0));
-            maxWeights.push(Math.max(...exercise.sets.map(set => set.weight)));
-        });
-
-        return { dates, volumes, maxWeights };
-    }
-
-    // Diagramm für Volumen
-    function renderVolumeChart(dates, volumes) {
-        new Chart(volumeChartCanvas, {
-            type: "line",
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: "Training Volume",
-                    data: volumes,
-                    borderColor: "#6c63ff",
-                    fill: false,
-                    tension: 0.1,
-                }],
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: true },
-                },
-                scales: {
-                    x: { title: { display: true, text: "Date" } },
-                    y: { title: { display: true, text: "Volume (kg)" } },
-                },
-            },
-        });
-    }
-
-    // Diagramm für Maximales Gewicht
-    function renderMaxWeightChart(dates, maxWeights) {
-        new Chart(maxWeightChartCanvas, {
-            type: "line",
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: "Max Weight",
-                    data: maxWeights,
-                    borderColor: "#ff6363",
-                    fill: false,
-                    tension: 0.1,
-                }],
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: true },
-                },
-                scales: {
-                    x: { title: { display: true, text: "Date" } },
-                    y: { title: { display: true, text: "Weight (kg)" } },
-                },
-            },
-        });
-    }
-
-    // Event Listener für Änderungen
-    exerciseSelect.addEventListener("change", updateCharts);
-    timeRange.addEventListener("change", updateCharts);
 }
