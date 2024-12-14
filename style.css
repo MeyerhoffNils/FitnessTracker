@@ -257,30 +257,8 @@ ul li {
         font-size: 0.9rem;
     }
 }
-
-/* Progress-Seite */
-.progress .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 20px 0;
+0.9rem;
+    }
 }
 
-.progress .filters label {
-    font-weight: bold;
-    margin-right: 10px;
-}
-
-.progress .charts {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.progress .charts canvas {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-}
+/
