@@ -1,4 +1,4 @@
-const cacheName = "fittrack-cache-v1";
+const cacheName = "fittrack-cache-v2"; // Neue Version des Caches
 const assets = [
     "./",
     "./index.html",
@@ -13,7 +13,21 @@ const assets = [
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(cacheName).then((cache) => {
+            console.log("Caching app shell...");
             return cache.addAll(assets);
+        })
+    );
+});
+
+// Aktivieren des Service Workers
+self.addEventListener("activate", (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames
+                    .filter((name) => name !== cacheName) // Alte Caches löschen
+                    .map((name) => caches.delete(name))
+            );
         })
     );
 });
