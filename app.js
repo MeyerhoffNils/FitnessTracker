@@ -259,31 +259,41 @@ if (currentPage === "Progress") {
     }
 
     // Workouts nach Zeit und Übung filtern
+    
     function filterWorkouts(exerciseName, timeRange) {
-        const now = new Date();
-        return workouts.filter(workout =>
-            workout.exercises.some(e => e.name === exerciseName) &&
-            (timeRange === "all" || (now - new Date(workout.date)) / (1000 * 60 * 60 * 24) <= timeRange)
-        );
-    }
+    const now = new Date();
+    return workouts.filter(workout => {
+        // Konvertiere das gespeicherte Datum in ein Date-Objekt
+        const workoutDate = new Date(workout.date);
+
+        // Überprüfe Zeitbereich und Übungsnamen
+        return workout.exercises.some(e => e.name === exerciseName) &&
+            (timeRange === "all" || (now - workoutDate) / (1000 * 60 * 60 * 24) <= timeRange);
+    });
+}
 
     // Diagrammdaten vorbereiten
-    function prepareChartData(filteredWorkouts) {
-        const dates = [];
-        const volumes = [];
-        const maxWeights = [];
+    
+function prepareChartData(filteredWorkouts) {
+    const dates = [];
+    const volumes = [];
+    const maxWeights = [];
 
-        filteredWorkouts.forEach(workout => {
-            const workoutDate = new Date(workout.date).toLocaleDateString();
-            const exercise = workout.exercises.find(e => e.name === exerciseSelect.value);
+    filteredWorkouts.forEach(workout => {
+        // Konvertiere das gespeicherte Datum in ein Date-Objekt
+        const workoutDate = new Date(workout.date).toLocaleDateString();
 
-            dates.push(workoutDate);
-            volumes.push(exercise.sets.reduce((sum, set) => sum + (set.weight * set.reps), 0));
-            maxWeights.push(Math.max(...exercise.sets.map(set => set.weight)));
-        });
+        // Suche die Übung
+        const exercise = workout.exercises.find(e => e.name === exerciseSelect.value);
 
-        return { dates, volumes, maxWeights };
-    }
+        // Daten sammeln
+        dates.push(workoutDate);
+        volumes.push(exercise.sets.reduce((sum, set) => sum + (set.weight * set.reps), 0));
+        maxWeights.push(Math.max(...exercise.sets.map(set => set.weight)));
+    });
+
+    return { dates, volumes, maxWeights };
+}
 
     // Volumen-Diagramm rendern
     function renderVolumeChart(dates, volumes) {
