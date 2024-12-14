@@ -209,141 +209,123 @@ if (currentPage === "History") {
 // === Progress-Seite ===
 if (currentPage === "Progress") {
     // DOM-Elemente
-    const exerciseSelect = document.getElementById("exerciseSelect");
-    const timeRange = document.getElementById("timeRange");
-    const volumeChartCanvas = document.getElementById("volumeChart");
-    const maxWeightChartCanvas = document.getElementById("maxWeightChart");
+const exerciseSelect = document.getElementById("exerciseSelect");
+const timeRange = document.getElementById("timeRange");
+const volumeChartCanvas = document.getElementById("volumeChart");
+const maxWeightChartCanvas = document.getElementById("maxWeightChart");
 
-    // Übungen und Workouts laden
-    const exercises = loadExercisesFromLocalStorage();
-    const workouts = loadWorkoutsFromLocalStorage();
-
-    // Dropdown mit gespeicherten Übungen befüllen
-    function populateExerciseDropdown() {
-        exerciseSelect.innerHTML = "<option value=''>Select an exercise</option>";
-        if (exercises.length > 0) {
-            exercises.forEach(exercise => {
-                const option = document.createElement("option");
-                option.value = exercise.name;
-                option.textContent = `${exercise.name} (${exercise.muscleGroup})`;
-                exerciseSelect.appendChild(option);
-            });
-        } else {
-            console.error("No exercises found in localStorage.");
-        }
+// Dropdown mit gespeicherten Übungen befüllen
+function populateExerciseDropdown() {
+    exerciseSelect.innerHTML = "<option value=''>Select an exercise</option>";
+    if (exercises.length > 0) {
+        exercises.forEach(exercise => {
+            const option = document.createElement("option");
+            option.value = exercise.name;
+            option.textContent = `${exercise.name} (${exercise.muscleGroup})`;
+            exerciseSelect.appendChild(option);
+        });
+    } else {
+        console.error("No exercises found in localStorage.");
     }
+}
 
-    populateExerciseDropdown();
-
-    // Diagramme aktualisieren
-    function updateCharts() {
-        const selectedExercise = exerciseSelect.value;
-        const selectedTimeRange = timeRange.value;
-
-        if (!selectedExercise) {
-            console.error("No exercise selected.");
-            return;
-        }
-
-        const filteredWorkouts = filterWorkouts(selectedExercise, selectedTimeRange);
-
-        if (filteredWorkouts.length === 0) {
-            console.error("No workouts found for the selected exercise and time range.");
-            return;
-        }
-
-        const chartData = prepareChartData(filteredWorkouts);
-
-        renderVolumeChart(chartData.dates, chartData.volumes);
-        renderMaxWeightChart(chartData.dates, chartData.maxWeights);
-    }
-
-    // Workouts nach Zeit und Übung filtern
-    
-    function filterWorkouts(exerciseName, timeRange) {
+// Filter für Workouts
+function filterWorkouts(exerciseName, timeRange) {
     const now = new Date();
     return workouts.filter(workout => {
-        // Konvertiere das gespeicherte Datum in ein Date-Objekt
         const workoutDate = new Date(workout.date);
-
-        // Überprüfe Zeitbereich und Übungsnamen
         return workout.exercises.some(e => e.name === exerciseName) &&
             (timeRange === "all" || (now - workoutDate) / (1000 * 60 * 60 * 24) <= timeRange);
     });
 }
 
-    // Diagrammdaten vorbereiten
-    
+// Diagrammdaten vorbereiten
 function prepareChartData(filteredWorkouts) {
     const dates = [];
     const volumes = [];
     const maxWeights = [];
 
     filteredWorkouts.forEach(workout => {
-        // Konvertiere das gespeicherte Datum in ein Date-Objekt
         const workoutDate = new Date(workout.date).toLocaleDateString();
-
-        // Suche die Übung
         const exercise = workout.exercises.find(e => e.name === exerciseSelect.value);
 
-        // Daten sammeln
-        dates.push(workoutDate);
-        volumes.push(exercise.sets.reduce((sum, set) => sum + (set.weight * set.reps), 0));
-        maxWeights.push(Math.max(...exercise.sets.map(set => set.weight)));
+        if (exercise) {
+            dates.push(workoutDate);
+            volumes.push(exercise.sets.reduce((sum, set) => sum + (set.weight * set.reps), 0));
+            maxWeights.push(Math.max(...exercise.sets.map(set => set.weight)));
+        }
     });
 
     return { dates, volumes, maxWeights };
 }
 
-    // Volumen-Diagramm rendern
-    function renderVolumeChart(dates, volumes) {
-        new Chart(volumeChartCanvas, {
-            type: "line",
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: "Training Volume",
-                    data: volumes,
-                    borderColor: "#6c63ff",
-                    fill: false,
-                    tension: 0.1,
-                }],
+// Diagramme rendern
+function renderCharts(chartData) {
+    new Chart(volumeChartCanvas, {
+        type: "line",
+        data: {
+            labels: chartData.dates,
+            datasets: [{
+                label: "Training Volume",
+                data: chartData.volumes,
+                borderColor: "#6c63ff",
+                tension: 0.1
+            }],
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: "Date" } },
+                y: { title: { display: true, text: "Volume (kg)" } },
             },
-            options: {
-                responsive: true,
-                scales: {
-                    x: { title: { display: true, text: "Date" } },
-                    y: { title: { display: true, text: "Volume (kg)" } },
-                },
-            },
-        });
-    }
+        }
+    });
 
-    // Maximalgewicht-Diagramm rendern
-    function renderMaxWeightChart(dates, maxWeights) {
-        new Chart(maxWeightChartCanvas, {
-            type: "line",
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: "Max Weight",
-                    data: maxWeights,
-                    borderColor: "#ff6363",
-                    fill: false,
-                    tension: 0.1,
-                }],
+    new Chart(maxWeightChartCanvas, {
+        type: "line",
+        data: {
+            labels: chartData.dates,
+            datasets: [{
+                label: "Max Weight",
+                data: chartData.maxWeights,
+                borderColor: "#ff6363",
+                tension: 0.1
+            }],
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: "Date" } },
+                y: { title: { display: true, text: "Weight (kg)" } },
             },
-            options: {
-                responsive: true,
-                scales: {
-                    x: { title: { display: true, text: "Date" } },
-                    y: { title: { display: true, text: "Weight (kg)" } },
-                },
-            },
-        });
-    }
-
-    // Event Listener für Dropdowns
-    exerciseSelect.addEventListener("change", updateCharts);
-    timeRange.addEventListener("change", updateCharts);
+        }
+    });
 }
+
+// Diagramme aktualisieren
+function updateCharts() {
+    const selectedExercise = exerciseSelect.value;
+    const selectedTimeRange = timeRange.value;
+
+    if (!selectedExercise) {
+        alert("Please select an exercise!");
+        return;
+    }
+
+    const filteredWorkouts = filterWorkouts(selectedExercise, selectedTimeRange);
+
+    if (filteredWorkouts.length === 0) {
+        alert("No workouts found for the selected exercise and time range.");
+        return;
+    }
+
+    const chartData = prepareChartData(filteredWorkouts);
+    renderCharts(chartData);
+}
+
+// Event Listener für Dropdown und Zeitbereich
+exerciseSelect.addEventListener("change", updateCharts);
+timeRange.addEventListener("change", updateCharts);
+
+// Initialisierung
+populateExerciseDropdown();
